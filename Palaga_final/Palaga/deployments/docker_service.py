@@ -4,7 +4,11 @@ from docker.errors import NotFound
 
 def start_container(image_name):
     client = docker.from_env()
-    return client.containers.run(image_name, detach=True)
+    return client.containers.run(
+        image_name,
+        command=['sleep', 'infinity'],
+        detach=True,
+    )
 
 
 def stop_container(container_id):

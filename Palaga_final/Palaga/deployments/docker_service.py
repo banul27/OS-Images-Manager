@@ -12,7 +12,7 @@ def stop_container(container_id):
     try:
         client.containers.get(container_id).stop()
     except NotFound:
-        pass  # already removed from Docker (prune, restart, manual delete)
+        pass  
 
 
 def restart_container(container_id):

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Deployments · OS Image Manager{% endblock %}
+{% block content %}
+<h1 class="mb-4">My deployments</h1>
+<p class="text-muted">Stopped deployments can be restarted (same container) or removed from your list.</p>
+{% if deployments %}
+<div class="table-responsive">
+<table class="table table-striped align-middle bg-white shadow-sm">
+    <thead>
+    <tr>
+        <th>Container ID</th>
+        <th>Image</th>
+        <th>Status</th>
+        <th>Started</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for deployment in deployments %}
+    <tr>
+        <td><code class="small">{{ deployment.container_id|truncatechars:16 }}</code></td>
+        <td>{{ deployment.image.name }}</td>
+        <td>
+            {% if deployment.status == 'Running' %}
+            <span class="badge text-bg-success">Running</span>
+            {% else %}
+            <span class="badge text-bg-secondary">Stopped</span>
+            {% endif %}
+        </td>
+        <td>{{ deployment.created_at }}</td>
+        <td class="text-nowrap">
+            {% if deployment.status == 'Running' %}
+            <a class="btn btn-outline-danger btn-sm" href="{% url 'stop_deployment' deployment.id %}">Stop</a>
+            {% else %}
+            <a class="btn btn-outline-success btn-sm" href="{% url 'restart_deployment' deployment.id %}">Restart</a>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'delete_deployment' deployment.id %}">Remove</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">No deployments yet.</p>
+{% endif %}
+{% endblock %}

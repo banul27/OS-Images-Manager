@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Images · OS Image Manager{% endblock %}
+{% block content %}
+<h1 class="mb-4">Lightweight OS images</h1>
+<p class="text-muted">Pull the image in Docker before deploy. Status shows your latest deployment for each image.</p>
+{% if image_rows %}
+<div class="table-responsive">
+<table class="table table-striped align-middle bg-white shadow-sm">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Version</th>
+        <th>Docker image</th>
+        <th>Description</th>
+        <th>Your status</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in image_rows %}
+    <tr>
+        <td>{{ row.image.name }}</td>
+        <td>{{ row.image.version }}</td>
+        <td><code>{{ row.image.docker_image }}</code></td>
+        <td>{{ row.image.description|truncatewords:20 }}</td>
+        <td>
+            {% if row.deploy_status == 'Running' %}
+            <span class="badge text-bg-success">Running</span>
+            {% elif row.deploy_status == 'Stopped' %}
+            <span class="badge text-bg-secondary">Stopped</span>
+            {% else %}
+            <span class="text-muted">—</span>
+            {% endif %}
+        </td>
+        <td>
+            <a class="btn btn-primary btn-sm" href="{% url 'deploy_container' row.image.id %}">Deploy</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">No images yet. Add them in <a href="{% url 'admin:index' %}">admin</a>.</p>
+{% endif %}
+{% endblock %}
